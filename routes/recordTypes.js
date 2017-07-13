@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Routes for record types
  */

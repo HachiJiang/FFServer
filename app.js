@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -12,7 +14,6 @@ app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('static', express.static('public'));
-app.set('view engine', 'pug');
 
 /**
  * Routes
@@ -26,8 +27,8 @@ const debtorRoutes = require('./routes/debtors');
 
 app.use('/records', recordRoutes);
 app.use('/recordtypes', recordTypeRoutes);
-app.use('/accountcat', accountCatRoutes);
-app.use('/projectcat', projectCatRoutes);
+app.use('/accounts', accountCatRoutes);
+app.use('/projects', projectCatRoutes);
 app.use('/members', memberRoutes);
 app.use('/debtors', debtorRoutes);
 
