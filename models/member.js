@@ -1,5 +1,7 @@
+'use strict';
+
 /**
- * MemberSchema
+ * Model for Member
  */
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;

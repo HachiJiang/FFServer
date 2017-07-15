@@ -9,7 +9,8 @@ const logger = require('morgan');
 const app = express();
 
 const recordRoutes = require('./routes/records');
-const recordTypeRoutes = require('./routes/recordTypes');
+const incomeRoutes = require('./routes/income');
+const outcomeRoutes = require('./routes/outcome');
 const accountRoutes = require('./routes/accounts');
 const projectRoutes = require('./routes/projects');
 const memberRoutes = require('./routes/members');
@@ -36,7 +37,8 @@ app.use('static', express.static('public'));
  * Use Routes
  */
 app.use('/records', recordRoutes);
-app.use('/recordtypes', recordTypeRoutes);
+app.use('/income', incomeRoutes);
+app.use('/outcome', outcomeRoutes);
 app.use('/accounts', accountRoutes);
 app.use('/projects', projectRoutes);
 app.use('/members', memberRoutes);

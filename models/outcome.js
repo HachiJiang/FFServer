@@ -1,21 +1,12 @@
+'use strict';
+
 /**
- * OutcomeSchema
+ * Model for Outcome
  */
+const _ = require('lodash');
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const OutcomeSchema = require('./category');
 
-var OutcomeSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    parent: {
-        type: String,  // id
-        required: true,
-        trim: true
-    }
-});
+const Outcome = mongoose.model('Outcome', OutcomeSchema);
 
-var Outcome = mongoose.model('Outcome', OutcomeSchema);
 module.exports = Outcome;

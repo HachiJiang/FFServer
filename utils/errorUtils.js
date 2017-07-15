@@ -6,7 +6,7 @@
  * @param {String} status
  * @returns {Error}
  */
-const createError = function(message, status) {
+const createError = (message, status) => {
     var err = new Error(message);
     err.status = status;
     return err;
@@ -16,7 +16,7 @@ const createError = function(message, status) {
  * Create Error for invalid params
  * @returns {Error}
  */
-const invalidParamsError = function() {
+const invalidParamsError = () => {
     return createError('Invalid params!', 401);
 };
 
@@ -24,7 +24,7 @@ const invalidParamsError = function() {
  * Create Error for Not Found
  * @returns {Error}
  */
-const notFoundError = function() {
+const notFoundError = () => {
     return createError('Not Found!', 404);
 };
 

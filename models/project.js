@@ -1,20 +1,12 @@
+'use strict';
+
 /**
- * ProjectSchema
+ * Model for Project
  */
+const _ = require('lodash');
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const ProjectSchema = require('./category');
 
-var ProjectSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    parent: {
-        type: String,
-        trim: true
-    }
-});
+const Project = mongoose.model('Project', ProjectSchema);
 
-var Project = mongoose.model('Project', ProjectSchema);
 module.exports = Project;

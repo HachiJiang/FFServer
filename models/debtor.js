@@ -1,5 +1,7 @@
+'use strict';
+
 /**
- * DebtorSchema
+ * Model for Debtor
  */
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;

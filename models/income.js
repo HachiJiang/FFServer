@@ -1,21 +1,12 @@
+'use strict';
+
 /**
- * IncomeSchema
+ * Model for Income
  */
+const _ = require('lodash');
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const IncomeSchema = require('./category');
 
-var IncomeSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    parent: {
-        type: String,  // id
-        required: true,
-        trim: true
-    }
-});
+const Income = mongoose.model('Income', IncomeSchema);
 
-var Income = mongoose.model('Income', IncomeSchema);
 module.exports = Income;
