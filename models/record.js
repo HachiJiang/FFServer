@@ -33,18 +33,18 @@ const RecordSchema = new Schema({
         type: String,  // id, content can be updated
         required: true
     },
-    date_created: {
-        type: Date,
-        required: true
-    },
-    date_updated: {
-        type: Date
-    },
     location: {
         type: String  // id, content can be updated
     },
     tips: {
         type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
+    updatedAt: {
+        type: Date
     }
 });
 

@@ -1,20 +1,60 @@
 /**
  * AccountSchema
  */
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-var AccountSchema = new Schema({
+const AccountItemSchema = new Schema({
     name: {
         type: String,
         required: true,
-        trim: true     // trim the whitespace after email string
+        trim: true,
+        unique: true
     },
-    parent: {
-        type: String,  // id
-        trim: true
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
+    updatedAt: {
+        type: Date
     }
 });
 
-var Account = mongoose.model('Account', AccountSchema);
+AccountItemSchema.method('update', function(updates, callback) {
+    _.assign(this, updates, { updatedAt: new Date() });
+    this.parent().save(callback);
+});
+
+const AccountSchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true
+    },
+    items: {
+        type: [AccountItemSchema],
+        trim: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
+    updatedAt: {
+        type: Date
+    }
+});
+
+AccountSchema.pre('update', function(next) {
+    _.assign(this, { updatedAt: new Date() });
+    next();
+});
+
+AccountSchema.pre('save', function(next) {
+    _.sortBy(this.items, ['createdAt']);
+    next();
+});
+
+const Account = mongoose.model('Account', AccountSchema);
 module.exports = Account;

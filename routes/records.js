@@ -16,7 +16,7 @@ route.get('/from/:fromDate/to/:toDate', function(req, res) {
 });
 
 /**
- * POST /from/:/to:toDate
+ * POST /
  * Route for creating a new record
  */
 route.post('/', function(req, res) {

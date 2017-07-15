@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose').set('debug', true);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -10,15 +10,15 @@ const app = express();
 
 const recordRoutes = require('./routes/records');
 const recordTypeRoutes = require('./routes/recordTypes');
-const accountCatRoutes = require('./routes/accounts');
-const projectCatRoutes = require('./routes/projects');
+const accountRoutes = require('./routes/accounts');
+const projectRoutes = require('./routes/projects');
 const memberRoutes = require('./routes/members');
 const debtorRoutes = require('./routes/debtors');
 
 mongoose.connect('mongodb://localhost:27017/finance');
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-
 db.once('open', function() {
     console.log('db connection successfully!');
 });
@@ -27,18 +27,18 @@ db.once('open', function() {
  * Use Middlewares
  */
 app.use(logger('dev'));
+app.use(bodyParser.json());   // For parse json format
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('static', express.static('public'));
-
 
 /**
  * Use Routes
  */
 app.use('/records', recordRoutes);
 app.use('/recordtypes', recordTypeRoutes);
-app.use('/accounts', accountCatRoutes);
-app.use('/projects', projectCatRoutes);
+app.use('/accounts', accountRoutes);
+app.use('/projects', projectRoutes);
 app.use('/members', memberRoutes);
 app.use('/debtors', debtorRoutes);
 
