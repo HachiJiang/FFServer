@@ -8,14 +8,6 @@ const logger = require('morgan');
 
 const app = express();
 
-const recordRoutes = require('./routes/records');
-const incomeRoutes = require('./routes/income');
-const outcomeRoutes = require('./routes/outcome');
-const accountRoutes = require('./routes/accounts');
-const projectRoutes = require('./routes/projects');
-const memberRoutes = require('./routes/members');
-const debtorRoutes = require('./routes/debtors');
-
 mongoose.connect('mongodb://localhost:27017/finance');
 
 var db = mongoose.connection;
@@ -34,15 +26,9 @@ app.use(cookieParser());
 app.use('static', express.static('public'));
 
 /**
- * Use Routes
+ * Use routes
  */
-app.use('/records', recordRoutes);
-app.use('/income', incomeRoutes);
-app.use('/outcome', outcomeRoutes);
-app.use('/accounts', accountRoutes);
-app.use('/projects', projectRoutes);
-app.use('/members', memberRoutes);
-app.use('/debtors', debtorRoutes);
+require('./routes/index')(app);
 
 /**
  * Use Error handlers
