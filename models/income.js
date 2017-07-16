@@ -3,9 +3,8 @@
 /**
  * Model for Income
  */
-const _ = require('lodash');
 const mongoose = require('mongoose');
-const IncomeSchema = require('./category');
+const IncomeSchema = require('./base/categorySchema');
 
 const Income = mongoose.model('Income', IncomeSchema);
 

@@ -5,29 +5,26 @@
  */
 
 const _ = require('lodash');
-const { invalidParamsError, notFoundError } = require('../utils/errorUtils');
+const { invalidParamsError, notFoundError } = require('../../utils/errorUtils');
 
 const category = function(Model) {
     const express = require('express');
     const route = express.Router();
 
     route.param('catId', function(req, res, next, id) {
-        Model.findById(id, function(err, doc) {
+        Model.findById(id, function(err, cat) {
             if (err) return next(err);
-            if (!doc) {
-                return next(notFoundError());
-            }
-            req.cat = doc;
+            if (!cat) return next(notFoundError());
+
+            req.cat = cat;
             return next();
         });
     });
 
     route.param('itemId', function(req, res, next, id) {
         req.item = req.cat.items.id(id);
-        if (!req.item) {
-            return next(notFoundError());
-        }
-        return next();
+        if (!req.item) return next(notFoundError());
+        next();
     });
 
     /**
@@ -35,9 +32,9 @@ const category = function(Model) {
      * Route for getting all categories
      */
     route.get('/', function(req, res) {
-        Model.find({}).exec(function(err, accounts) {
+        Model.find({}).exec(function(err, cats) {
             if (err) return next(err);
-            res.json(accounts);
+            res.json(cats);
         });
     });
 
@@ -46,20 +43,18 @@ const category = function(Model) {
      * Route for creating a new category
      */
     route.post('/', function(req, res, next) {
-        console.log(req);
         const { name, items } = req.body;
-        if (!name) {
-            return next(invalidParamsError());
-        }
+
+        if (!name || (items && !_.isArray(items))) return next(invalidParamsError());
 
         const cat = {
             name,
             items: items || []
         };
-        Model.create(cat, function(err, account) {
+        Model.create(cat, function(err, cat) {
             if (err) return next(err);
             res.status(201);
-            res.json(account);
+            res.json(cat);
         });
     });
 
@@ -71,11 +66,10 @@ const category = function(Model) {
         let cat = req.cat;
         const newItem = req.body;
 
-        if (!newItem || !newItem.name) {
-            return next(invalidParamsError());
-        }
+        if (!newItem || !newItem.name) return next(invalidParamsError());
 
         cat.items.push(newItem);
+
         cat.save(function(err, cat) {
             if (err) return next(err);
             res.status(201);
@@ -91,9 +85,7 @@ const category = function(Model) {
         const cat = req.cat;
         const { name } = req.body;
 
-        if (!name) {
-            return next(invalidParamsError());
-        }
+        if (!name) return next(invalidParamsError());
 
         cat.update({ name }, function(err, result) {
             if (err) return next(err);
@@ -103,17 +95,15 @@ const category = function(Model) {
 
     /**
      * PUT /:catId/items/:itemId
-     * Route for updating name of an account item
+     * Route for updating name of an item
      */
     route.put('/:catId/items/:itemId', function(req, res, next) {
         const item = req.item;
         const { name } = req.body;
 
-        if (!name) {
-            return next(invalidParamsError());
-        }
+        if (!name) return next(invalidParamsError());
 
-        item.update({ name }, function(err, result) {
+        item.updateEmbedded({ name }, function(err, result) {
             if (err) return next(err);
             res.json(result);
         });
@@ -124,7 +114,6 @@ const category = function(Model) {
      * Route for deleting an existing category
      */
     route.delete('/:catId', function(req, res) {
-        console.log(req.params.catId);
         req.cat.remove(function(err, result) {
             if (err) return next(err);
             res.json(result);
@@ -138,6 +127,7 @@ const category = function(Model) {
     route.delete('/:catId/items/:itemId', function(req, res) {
         req.item.remove(function(err) {
             if (err) return next(err);
+
             req.cat.save(function(err, cat) {
                 if (err) return next(err);
                 res.json(cat);

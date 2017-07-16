@@ -4,15 +4,8 @@
  * Model for Debtor
  */
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const DebtorSchema = require('./base/itemSchema');
 
-var DebtorSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    }
-});
+const Debtor = mongoose.model('Debtor', DebtorSchema);
 
-var Debtor = mongoose.model('Debtor', DebtorSchema);
 module.exports = Debtor;

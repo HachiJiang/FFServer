@@ -4,15 +4,8 @@
  * Model for Member
  */
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const MemberSchema = require('./base/itemSchema');
 
-var MemberSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    }
-});
+const Member = mongoose.model('Member', MemberSchema);
 
-var Member = mongoose.model('Member', MemberSchema);
 module.exports = Member;

@@ -3,9 +3,8 @@
 /**
  * Model for Project
  */
-const _ = require('lodash');
 const mongoose = require('mongoose');
-const ProjectSchema = require('./category');
+const ProjectSchema = require('./base/categorySchema');
 
 const Project = mongoose.model('Project', ProjectSchema);
 

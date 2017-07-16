@@ -3,9 +3,8 @@
 /**
  * Model for Outcome
  */
-const _ = require('lodash');
 const mongoose = require('mongoose');
-const OutcomeSchema = require('./category');
+const OutcomeSchema = require('./base/categorySchema');
 
 const Outcome = mongoose.model('Outcome', OutcomeSchema);
 

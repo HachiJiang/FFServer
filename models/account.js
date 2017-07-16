@@ -3,9 +3,8 @@
 /**
  * Model for Account
  */
-const _ = require('lodash');
 const mongoose = require('mongoose');
-const AccountSchema = require('./category');
+const AccountSchema = require('./base/categorySchema');
 
 const Account = mongoose.model('Account', AccountSchema);
 
