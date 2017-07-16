@@ -113,7 +113,7 @@ const category = function(Model) {
      * DELETE /:catId
      * Route for deleting an existing category
      */
-    route.delete('/:catId', function(req, res) {
+    route.delete('/:catId', function(req, res, next) {
         req.cat.remove(function(err, result) {
             if (err) return next(err);
             res.json(result);
@@ -124,7 +124,7 @@ const category = function(Model) {
      * DELETE /:catId/items/:itemId
      * Route for deleting an existing item
      */
-    route.delete('/:catId/items/:itemId', function(req, res) {
+    route.delete('/:catId/items/:itemId', function(req, res, next) {
         req.item.remove(function(err) {
             if (err) return next(err);
 

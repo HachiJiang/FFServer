@@ -4,7 +4,7 @@
  * Model for Debtor
  */
 const mongoose = require('mongoose');
-const DebtorSchema = require('./base/itemSchema');
+const DebtorSchema = require('./factory/itemSchemaCreator')();
 
 const Debtor = mongoose.model('Debtor', DebtorSchema);
 

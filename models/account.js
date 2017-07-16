@@ -4,7 +4,7 @@
  * Model for Account
  */
 const mongoose = require('mongoose');
-const AccountSchema = require('./base/categorySchema');
+const AccountSchema = require('./factory/categorySchemaCreator')();
 
 const Account = mongoose.model('Account', AccountSchema);
 

@@ -3,6 +3,7 @@
 /**
  * Model for Record
  */
+const _ = require('lodash');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -13,7 +14,7 @@ const RecordSchema = new Schema({
         type: String,
         enum: TYPES,
         required: true,
-        trim: true     // trim the whitespace after email string
+        trim: true
     },
     amount: {
         type: Number,
@@ -36,10 +37,12 @@ const RecordSchema = new Schema({
         required: true
     },
     location: {
-        type: String  // id, content can be updated
+        type: String,  // id, content can be updated,
+        trim: true
     },
     tips: {
-        type: String
+        type: String,
+        trim: true
     },
     createdAt: {
         type: Date,
@@ -48,6 +51,15 @@ const RecordSchema = new Schema({
     updatedAt: {
         type: Date
     }
+});
+
+/**
+ * Update method for item
+ * Seems default "update" cannot get document as "this"
+ */
+RecordSchema.method('update', function(updates, callback) {
+    _.assign(this, updates, { updatedAt: new Date() });
+    this.save(callback);
 });
 
 const Record = mongoose.model('Record', RecordSchema);

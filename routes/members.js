@@ -3,10 +3,9 @@
 /**
  * Routes for members
  */
-const express = require('express');
-const route = express.Router();
-const item = require('./factory/item');
-
 const Member = require('../models/member');
+const item = require('./factory/itemRouteCreator');
 
-module.exports = item(Member);
+const route = item(Member);
+
+module.exports = route;

@@ -4,7 +4,7 @@
  * Model for Project
  */
 const mongoose = require('mongoose');
-const ProjectSchema = require('./base/categorySchema');
+const ProjectSchema = require('./factory/categorySchemaCreator')();
 
 const Project = mongoose.model('Project', ProjectSchema);
 

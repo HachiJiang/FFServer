@@ -3,10 +3,9 @@
 /**
  * Routes for debtors
  */
-const express = require('express');
-const route = express.Router();
-const item = require('./factory/item');
-
 const Debtor = require('../models/debtor');
+const item = require('./factory/itemRouteCreator');
 
-module.exports = item(Debtor);
+const route = item(Debtor);
+
+module.exports = route;

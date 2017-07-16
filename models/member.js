@@ -4,7 +4,7 @@
  * Model for Member
  */
 const mongoose = require('mongoose');
-const MemberSchema = require('./base/itemSchema');
+const MemberSchema = require('./factory/itemSchemaCreator')();
 
 const Member = mongoose.model('Member', MemberSchema);
 
