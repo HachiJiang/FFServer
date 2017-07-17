@@ -6,21 +6,28 @@
 const express = require('express');
 const route = express.Router();
 
+const Record = require('../models/record');
+
 /**
  * GET /from/:fromDate/to:toDate
  * Route for records of specific date range
  */
-route.get('/from/:fromDate/to/:toDate', function(req, res) {
-    const { fromDate, toDate } = req.params;
-    res.send(`Get records from ${fromDate} to ${toDate}`);
+route.get('/from/:fYear/:fMonth/:fDay/to/:tYear/:tMonth/:tDay', function(req, res) {
+
 });
 
 /**
  * POST /
  * Route for creating a new record
  */
-route.post('/', function(req, res) {
-    res.send(`Creating a new record ${req.body}`);
+route.post('/', function(req, res, next) {
+    const { type, amount, category, accountFrom, accountTo, project, member, location, tips } = req.body;
+
+    Record.create({ type, amount, category, accountFrom, accountTo, project, member, location, tips }, function(err, cat) {
+        if (err) return next(err);
+        res.status(201);
+        res.json(cat);
+    });
 });
 
 /**

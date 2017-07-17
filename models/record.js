@@ -22,9 +22,13 @@ const RecordSchema = new Schema({
     },
     category: {
         type: String,  // id, content can be updated
+        required: true/*function() { return this.type === TYPES[0] || TYPES[1]; }*/
+    },
+    accountFrom: {
+        type: String,  // id, content can be updated
         required: true
     },
-    account: {
+    accountTo: {
         type: String,  // id, content can be updated
         required: true
     },
@@ -34,6 +38,10 @@ const RecordSchema = new Schema({
     },
     member: {
         type: String,  // id, content can be updated
+        required: true
+    },
+    consumeDate: {
+        type: Date,
         required: true
     },
     location: {
