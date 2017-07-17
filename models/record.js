@@ -7,30 +7,48 @@ const _ = require('lodash');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const TYPES = ['outcome', 'income', 'transfer', 'borrow', 'lend', 'repay', 'collect_debt'];
+const EnumRecordTypes = require('../consts/EnumRecordTypes');
 
 const RecordSchema = new Schema({
     type: {
         type: String,
-        enum: TYPES,
+        enum: _.toArray(EnumRecordTypes),
         required: true,
         trim: true
     },
     amount: {
         type: Number,
-        required: true
+        required: true,
+        validate: {
+            validator: v => v > 0
+        }
     },
     category: {
         type: String,  // id, content can be updated
-        required: true/*function() { return this.type === TYPES[0] || TYPES[1]; }*/
+        required: function() {
+            const type = this.type;
+            return type === EnumRecordTypes.OUTCOME || type === EnumRecordTypes.INCOME;
+        }
     },
     accountFrom: {
         type: String,  // id, content can be updated
-        required: true
+        required: function() {
+            const type = this.type;
+            return type === EnumRecordTypes.OUTCOME ||
+                type === EnumRecordTypes.TRANSFER ||
+                type === EnumRecordTypes.LEND ||
+                type === EnumRecordTypes.REPAY;
+        }
     },
     accountTo: {
         type: String,  // id, content can be updated
-        required: true
+        required: function() {
+            const type = this.type;
+            return type === EnumRecordTypes.INCOME ||
+                type === EnumRecordTypes.TRANSFER ||
+                type === EnumRecordTypes.BORROW ||
+                type === EnumRecordTypes.COLLECT_DEBT;
+        }
     },
     project: {
         type: String,  // id, content can be updated
