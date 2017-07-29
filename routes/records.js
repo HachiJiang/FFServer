@@ -13,6 +13,8 @@ const { invalidParamsError, notFoundError } = require('./../utils/errorUtils');
 const PAGE_SLICE = 20;  // record number for each page
 
 route.param('rid', function(req, res, next, id) {
+    // @TODO: get category/account/project/member/debtor
+
     Record.findById(id, function(err, record) {
         if (err) return next(err);
         if (!record) return next(notFoundError());
@@ -27,7 +29,7 @@ route.param('rid', function(req, res, next, id) {
  * Route for getting latest 20 records
  */
 route.get('/', function(req, res) {
-    Record.find({}).limit(PAGE_SLICE).exec(function(err, records) {
+    Record.find({}).sort({ consumeDate: -1 }).limit(PAGE_SLICE).exec(function(err, records) {
         if (err) return next(err);
         res.json(records);
     });
@@ -89,6 +91,7 @@ route.put('/:rid', function(req, res, next) {
 route.delete('/:rid', function(req, res, next) {
     req.record.remove(function(err, result) {
         if (err) return next(err);
+        console.log(result);
         res.json(result);
     });
 });

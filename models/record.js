@@ -58,10 +58,22 @@ const RecordSchema = new Schema({
         type: String,  // id, content can be updated
         required: true
     },
+    debtor: {
+        type: String,  // id, content can be updated
+        required: function() {
+            const type = this.type;
+            return type === EnumRecordTypes.BORROW ||
+                type === EnumRecordTypes.LEND ||
+                type === EnumRecordTypes.REPAY ||
+                type === EnumRecordTypes.COLLECT_DEBT;
+        }
+    },
     consumeDate: {
         type: Date,
         required: true
     },
+    // @TODO: need location service to get standard location name
+    // now just leave it empty
     location: {
         type: String,  // id, content can be updated,
         trim: true
