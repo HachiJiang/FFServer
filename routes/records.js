@@ -9,6 +9,7 @@ const route = express.Router();
 
 const Record = require('../models/record');
 const { invalidParamsError, notFoundError } = require('./../utils/errorUtils');
+const { validateRecord } = require('./../utils/recordUtils');
 
 const PAGE_SLICE = 20;  // record number for each page
 
@@ -58,11 +59,9 @@ route.get('/from/:fDate/to/:tDate', function(req, res, next) {
  * Route for creating a new record
  */
 route.post('/', function(req, res, next) {
-    const { type, amount, category, accountFrom, accountTo, project,
-        member, consumeDate, location, tips } = req.body;
+    console.log('Create record: ', validateRecord(req.body));
 
-    Record.create({ type, amount, category, accountFrom, accountTo, project,
-        member, consumeDate, location, tips }, function(err, cat) {
+    Record.create(validateRecord(req.body), function(err, cat) {
         if (err) return next(err);
         res.status(201);
         res.json(cat);
