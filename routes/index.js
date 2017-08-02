@@ -11,14 +11,16 @@ const projectRoutes = require('./projects');
 const memberRoutes = require('./members');
 const debtorRoutes = require('./debtors');
 
+const VERSION = 'v1';
+
 const loadRoutes = function(app) {
-    app.use('/records', recordRoutes);
-    app.use('/income', incomeRoutes);
-    app.use('/outcome', outcomeRoutes);
-    app.use('/accounts', accountRoutes);
-    app.use('/projects', projectRoutes);
-    app.use('/members', memberRoutes);
-    app.use('/debtors', debtorRoutes);
+    app.use(`/${VERSION}/records`, recordRoutes);
+    app.use(`/${VERSION}/income`, incomeRoutes);
+    app.use(`/${VERSION}/outcome`, outcomeRoutes);
+    app.use(`/${VERSION}/accounts`, accountRoutes);
+    app.use(`/${VERSION}/projects`, projectRoutes);
+    app.use(`/${VERSION}/members`, memberRoutes);
+    app.use(`/${VERSION}/debtors`, debtorRoutes);
 };
 
 module.exports = loadRoutes;
