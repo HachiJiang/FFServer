@@ -59,8 +59,6 @@ route.get('/from/:fDate/to/:tDate', function(req, res, next) {
  * Route for creating a new record
  */
 route.post('/', function(req, res, next) {
-    console.log('Create record: ', validateRecord(req.body));
-
     Record.create(validateRecord(req.body), function(err, cat) {
         if (err) return next(err);
         res.status(201);
