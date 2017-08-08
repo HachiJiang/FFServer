@@ -3,6 +3,7 @@
 /**
  * Routes for records
  */
+const _ = require('lodash');
 const moment = require('moment');
 const express = require('express');
 const route = express.Router();
@@ -16,8 +17,6 @@ const { ID_SEPARATOR } = require('../consts/Config');
 const PAGE_SLICE = 50;  // record number for each page
 
 route.param('rid', function(req, res, next, id) {
-    // @TODO: get category/account/project/member/debtor
-
     Record.findById(id, function(err, record) {
         if (err) return next(err);
         if (!record) return next(notFoundError());
@@ -71,8 +70,6 @@ function getAccountUpdateCommand(accountStr, amount) {
 
     if (!catId || !itemId) return;
 
-    console.log(ids);
-
     return {
         updateOne: {
             filter: {
@@ -91,20 +88,16 @@ function getAccountUpdateCommand(accountStr, amount) {
  * @param result: sent to client
  * @param next
  * @param {Object} record
- * @param {Object} oldRecord: old version, for updating only
+ * @param {String} oldAccountFrom: old version, for updating only
+ * @param {String} oldAccountTo
  */
-function updateAccountByRecord(res, next, result, record, oldRecord) {
+function updateAccountByRecord(res, next, result, record, oldAccountFrom, oldAccountTo) {
     const { accountFrom, accountTo, amount } = record;
     let commands = [];
 
     // if account is updated
-    if (oldRecord) {
-        const oldAccountFrom = oldRecord.accountFrom;
-        const oldAccountTo = oldRecord.accountTo;
-
-        if (oldAccountFrom !== accountFrom) commands.push(getAccountUpdateCommand(oldAccountFrom, amount));
-        if (oldAccountTo !== accountTo) commands.push(getAccountUpdateCommand(oldAccountTo, -amount));
-    }
+    if (oldAccountFrom !== accountFrom) commands.push(getAccountUpdateCommand(oldAccountFrom, amount));
+    if (oldAccountTo !== accountTo) commands.push(getAccountUpdateCommand(oldAccountTo, -amount));
 
     const commandForFrom = getAccountUpdateCommand(accountFrom, -amount);
     if (commandForFrom) commands.push(commandForFrom);
@@ -112,10 +105,7 @@ function updateAccountByRecord(res, next, result, record, oldRecord) {
     const commandForTo = getAccountUpdateCommand(accountTo, amount);
     if (commandForTo) commands.push(commandForTo);
 
-    console.log(commands);
-
     Account.bulkWrite(commands).then(function(r) {
-        console.log(r.modifiedCount);
         if (r.modifiedCount !== commands.length) return next(err);
         res.json(result);
     });
@@ -142,10 +132,12 @@ route.post('/', function(req, res, next) {
 route.put('/:rid', function(req, res, next) {
     const record = validateRecord(req.body);
     const oldRecord = req.record;
+    const oldAccountFrom = oldRecord.accountFrom; // avoid sync
+    const oldAccountTo = oldRecord.accountTo; // avoid sync
 
     oldRecord.update(record, function(err, result) {
         if (err) return next(err);
-        updateAccountByRecord(res, next, result, record, oldRecord);
+        updateAccountByRecord(res, next, result, record, oldAccountFrom, oldAccountTo);
     })
 });
 
