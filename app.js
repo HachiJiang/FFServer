@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const accountValidation = require('./tests/accountValidation');
+
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/finance');
@@ -14,6 +16,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('db connection successfully!');
+    accountValidation.checkBalance();
 });
 
 /**
