@@ -8,8 +8,9 @@ const _ = require('lodash');
 const Schema = require('mongoose').Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 
-module.exports = function() {
-    const ItemSchema = require('./itemSchemaCreator')();
+module.exports = function(props, subProps) {
+    const ItemSchema = require('./itemSchemaCreator')(subProps);
+    const extraProps = props || {};
 
     /**
      * Update method for embedded item
@@ -19,7 +20,7 @@ module.exports = function() {
         this.parent().update({}, callback);
     });
 
-    const CategorySchema = new Schema({
+    const CategorySchema = new Schema(_.assign({
         name: {
             type: String,
             required: true,
@@ -34,7 +35,7 @@ module.exports = function() {
         updatedAt: {
             type: Date
         }
-    });
+    }, extraProps));
 
     /**
      * Update method for category

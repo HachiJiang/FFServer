@@ -7,8 +7,9 @@ const _ = require('lodash');
 const Schema = require('mongoose').Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 
-module.exports = function() {
-    var ItemSchema = new Schema({
+module.exports = function(props) {
+    const extraProps = props || {};
+    const ItemSchema = new Schema(_.assign({
         name: {
             type: String,
             required: true,
@@ -22,7 +23,7 @@ module.exports = function() {
         updatedAt: {
             type: Date
         }
-    });
+    }, extraProps));
 
     /**
      * Update method for item

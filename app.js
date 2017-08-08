@@ -8,7 +8,7 @@ const logger = require('morgan');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/finance');
+mongoose.connect('mongodb://localhost:27017/finance_test');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
