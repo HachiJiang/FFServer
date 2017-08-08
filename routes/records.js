@@ -3,7 +3,6 @@
 /**
  * Routes for records
  */
-const _ = require('lodash');
 const moment = require('moment');
 const express = require('express');
 const route = express.Router();
@@ -96,8 +95,8 @@ function updateAccountByRecord(res, next, result, record, oldAccountFrom, oldAcc
     let commands = [];
 
     // if account is updated
-    if (oldAccountFrom !== accountFrom) commands.push(getAccountUpdateCommand(oldAccountFrom, amount));
-    if (oldAccountTo !== accountTo) commands.push(getAccountUpdateCommand(oldAccountTo, -amount));
+    if (oldAccountFrom && oldAccountFrom !== accountFrom) commands.push(getAccountUpdateCommand(oldAccountFrom, amount));
+    if (oldAccountTo && oldAccountTo !== accountTo) commands.push(getAccountUpdateCommand(oldAccountTo, -amount));
 
     const commandForFrom = getAccountUpdateCommand(accountFrom, -amount);
     if (commandForFrom) commands.push(commandForFrom);
