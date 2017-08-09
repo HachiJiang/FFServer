@@ -41,7 +41,11 @@ const getSavedAccounts = accounts => {
         const catId = cat._id;
         _.forEach(cat.items, item => {
             if (!item) return;
-            savedAccounts[[catId, item._id].join(ID_SEPARATOR)] = _.toNumber(item.balance || 0).toFixed(2);
+            savedAccounts[[catId, item._id].join(ID_SEPARATOR)] = {
+                catName: cat.name,
+                itemName: item.name,
+                balance: _.toNumber(item.balance || 0).toFixed(2)
+            };
         });
     });
 
@@ -70,9 +74,10 @@ const checkBalance = () => {
                 console.log(saved);
 
                 // compare results
-                _.forIn(saved, (value, key) => {
-                    if (calculated[key] && calculated[key] !== value) {
-                        console.error(key, ' ', 'Calculated: ' + calculated[key], ' ', 'Saved: ' + saved[key]);
+                _.forIn(saved, (account, key) => {
+                    if (calculated[key] && calculated[key] !== account.balance) {
+                        console.error('Mismatched: ');
+                        console.error(account.catName, ', ', account.itemName, ' ', 'Calculated: ' + calculated[key], ' ', 'Saved: ' + saved[key].balance);
                     }
                 });
             });

@@ -90,19 +90,25 @@ function getAccountUpdateCommand(accountStr, amount) {
  * @param {String} oldAccountFrom: old version, for updating only
  * @param {String} oldAccountTo
  */
-function updateAccountByRecord(res, next, result, record, oldAccountFrom, oldAccountTo) {
+function updateAccountByRecord(res, next, result, record, oldAccountFrom = '', oldAccountTo = '') {
     const { accountFrom, accountTo, amount } = record;
     let commands = [];
 
     // if account is updated
-    if (oldAccountFrom && oldAccountFrom !== accountFrom) commands.push(getAccountUpdateCommand(oldAccountFrom, amount));
-    if (oldAccountTo && oldAccountTo !== accountTo) commands.push(getAccountUpdateCommand(oldAccountTo, -amount));
+    if (oldAccountFrom && oldAccountFrom !== accountFrom) {
+        commands.push(getAccountUpdateCommand(oldAccountFrom, amount));
+    }
+    if (oldAccountTo && oldAccountTo !== accountTo) {
+        commands.push(getAccountUpdateCommand(oldAccountTo, -amount));
+    }
 
-    const commandForFrom = getAccountUpdateCommand(accountFrom, -amount);
-    if (commandForFrom) commands.push(commandForFrom);
+    if (accountFrom && oldAccountFrom !== accountFrom) {
+        commands.push(getAccountUpdateCommand(accountFrom, -amount));
+    }
 
-    const commandForTo = getAccountUpdateCommand(accountTo, amount);
-    if (commandForTo) commands.push(commandForTo);
+    if (accountTo && oldAccountTo !== accountTo) {
+        commands.push(getAccountUpdateCommand(accountTo, amount));
+    }
 
     Account.bulkWrite(commands).then(function(r) {
         if (r.modifiedCount !== commands.length) return next(err);
