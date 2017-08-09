@@ -77,7 +77,7 @@ const checkBalance = () => {
                 _.forIn(saved, (account, key) => {
                     if (calculated[key] && calculated[key] !== account.balance) {
                         console.error('Mismatched: ');
-                        console.error(account.catName, ', ', account.itemName, ' ', 'Calculated: ' + calculated[key], ' ', 'Saved: ' + saved[key].balance);
+                        console.error(key, ' ', account.catName, ', ', account.itemName, ' ', 'Calculated: ' + calculated[key], ' ', 'Saved: ' + saved[key].balance);
                     }
                 });
             });
