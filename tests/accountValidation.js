@@ -78,6 +78,8 @@ const checkBalance = () => {
                     if (calculated[key] && calculated[key] !== account.balance) {
                         console.error('Mismatched: ');
                         console.error(key, ' ', account.catName, ', ', account.itemName, ' ', 'Calculated: ' + calculated[key], ' ', 'Saved: ' + saved[key].balance);
+
+                        // @TODO: update account, use bulkWrite
                     }
                 });
             });

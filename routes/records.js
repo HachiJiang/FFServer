@@ -89,31 +89,38 @@ function getAccountUpdateCommand(accountStr, amount) {
  * @param {Object} record
  * @param {String} oldAccountFrom: old version, for updating only
  * @param {String} oldAccountTo
+ * @param {number} oldAmount
  */
-function updateAccountByRecord(res, next, result, record, oldAccountFrom = '', oldAccountTo = '') {
+function updateAccountByRecord(res, next, result, record, oldAccountFrom = '', oldAccountTo = '', oldAmount = 0) {
     const { accountFrom, accountTo, amount } = record;
     let commands = [];
 
     // if account is updated
-    if (oldAccountFrom && oldAccountFrom !== accountFrom) {
-        commands.push(getAccountUpdateCommand(oldAccountFrom, amount));
+    if (oldAccountFrom) {
+        commands.push(getAccountUpdateCommand(oldAccountFrom, oldAmount));
     }
-    if (oldAccountTo && oldAccountTo !== accountTo) {
-        commands.push(getAccountUpdateCommand(oldAccountTo, -amount));
+    if (oldAccountTo) {
+        commands.push(getAccountUpdateCommand(oldAccountTo, -oldAmount));
     }
 
-    if (accountFrom && oldAccountFrom !== accountFrom) {
+    if (accountFrom) {
         commands.push(getAccountUpdateCommand(accountFrom, -amount));
     }
 
-    if (accountTo && oldAccountTo !== accountTo) {
+    if (accountTo) {
         commands.push(getAccountUpdateCommand(accountTo, amount));
     }
 
-    Account.bulkWrite(commands).then(function(r) {
-        if (r.modifiedCount !== commands.length) return next(err);
+    console.log(commands);
+
+    if (commands.length < 1) {
         res.json(result);
-    });
+    } else {
+        Account.bulkWrite(commands).then(function(r) {
+            if (r.modifiedCount !== commands.length) return next(err);
+            res.json(result);
+        });
+    }
 }
 
 /**
@@ -138,11 +145,12 @@ route.put('/:rid', function(req, res, next) {
     const record = validateRecord(req.body);
     const oldRecord = req.record;
     const oldAccountFrom = oldRecord.accountFrom; // avoid sync
-    const oldAccountTo = oldRecord.accountTo; // avoid sync
+    const oldAccountTo = oldRecord.accountTo;
+    const oldAmount = oldRecord.amount;
 
     oldRecord.update(record, function(err, result) {
         if (err) return next(err);
-        updateAccountByRecord(res, next, result, record, oldAccountFrom, oldAccountTo);
+        updateAccountByRecord(res, next, result, record, oldAccountFrom, oldAccountTo, oldAmount);
     })
 });
 
