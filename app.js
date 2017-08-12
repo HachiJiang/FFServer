@@ -1,22 +1,28 @@
 'use strict';
 
 const express = require('express');
-const mongoose = require('mongoose').set('debug', true);
+const mongoose = require('mongoose').set('debug', false);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const accountValidation = require('./tests/accountValidation');
+const debtorValidation = require('./tests/debtorValidation');
 
 const app = express();
 
 mongoose.connect('mongodb://localhost:27017/finance');
 
-var db = mongoose.connection;
+const VALIDATION_ENABLED = true;
+
+const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
     console.log('db connection successfully!');
-    accountValidation.checkBalance();
+    if (VALIDATION_ENABLED) {
+        accountValidation.checkBalance();
+        debtorValidation.checkBalance();
+    }
 });
 
 /**
@@ -27,6 +33,7 @@ app.use(bodyParser.json());   // For parse json format
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('static', express.static('public'));
+
 
 // allow cross domain request
 app.use(function(req, res, next) {

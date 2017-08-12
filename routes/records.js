@@ -3,15 +3,18 @@
 /**
  * Routes for records
  */
+const _ = require('lodash');
 const moment = require('moment');
 const express = require('express');
 const route = express.Router();
 
 const Record = require('../models/record');
 const Account = require('../models/account');
+const Debtor = require('../models/debtor');
 const { invalidParamsError, notFoundError } = require('../utils/errorUtils');
 const { validateRecord } = require('../utils/recordUtils');
-const { ID_SEPARATOR } = require('../consts/Config');
+const accountUtils = require('../utils/accountUtils');
+const debtorUtils = require('../utils/debtorUtils');
 
 const PAGE_SLICE = 50;  // record number for each page
 
@@ -55,70 +58,26 @@ route.get('/from/:fDate/to/:tDate', function(req, res, next) {
 });
 
 /**
- * Update account balance
- * @param {string} accountStr
- * @param {number} amount
- * @returns {Object}
- */
-function getAccountUpdateCommand(accountStr, amount) {
-    if (!accountStr) return;
-
-    const ids = accountStr.split(ID_SEPARATOR);
-    const catId = ids[0];
-    const itemId = ids[1];
-
-    if (!catId || !itemId) return;
-
-    return {
-        updateOne: {
-            filter: {
-                _id: catId,
-                "items._id": itemId
-            },
-            update: { "$inc": { "items.$.balance": amount } }
-        }
-    };
-}
-
-/**
  * Update account
- * @param res
- * @param next
- * @param result: sent to client
- * @param next
- * @param {Object} record
- * @param {String} oldAccountFrom: old version, for updating only
- * @param {String} oldAccountTo
- * @param {number} oldAmount
+ * @param {Object} newRecord
+ * @param {Object} oldRecord
  */
-function updateAccountByRecord(res, next, result, record, oldAccountFrom = '', oldAccountTo = '', oldAmount = 0) {
-    const { accountFrom, accountTo, amount } = record;
-    let commands = [];
-
-    // if account is updated
-    if (oldAccountFrom) {
-        commands.push(getAccountUpdateCommand(oldAccountFrom, oldAmount));
-    }
-    if (oldAccountTo) {
-        commands.push(getAccountUpdateCommand(oldAccountTo, -oldAmount));
+function updateRelatedInfoByRecord(newRecord, oldRecord) {
+    const commandsForAccount = accountUtils.getBalanceUpdateCommand(newRecord, oldRecord);
+    if (commandsForAccount.length > 0) {
+        Account.bulkWrite(commandsForAccount).then(function(r) {
+            if (r.modifiedCount !== commandsForAccount.length) {
+                console.error('Fail to update account balance!');
+            }
+        });
     }
 
-    if (accountFrom) {
-        commands.push(getAccountUpdateCommand(accountFrom, -amount));
-    }
-
-    if (accountTo) {
-        commands.push(getAccountUpdateCommand(accountTo, amount));
-    }
-
-    console.log(commands);
-
-    if (commands.length < 1) {
-        res.json(result);
-    } else {
-        Account.bulkWrite(commands).then(function(r) {
-            if (r.modifiedCount !== commands.length) return next(err);
-            res.json(result);
+    const commandsForDebtor = debtorUtils.getBalanceUpdateCommand(newRecord, oldRecord);
+    if (commandsForDebtor.length > 0) {
+        Debtor.bulkWrite(commandsForDebtor).then(function(r) {
+            if (r.modifiedCount !== commandsForDebtor.length) {
+                console.error('Fail to update debtor balance!');
+            }
         });
     }
 }
@@ -133,7 +92,8 @@ route.post('/', function(req, res, next) {
     Record.create(record, function(err, cat) {
         if (err) return next(err);
         res.status(201);
-        updateAccountByRecord(res, next, cat, record);
+        res.json(cat);
+        updateRelatedInfoByRecord(record);
     });
 });
 
@@ -142,15 +102,13 @@ route.post('/', function(req, res, next) {
  * Route for updating an existing record
  */
 route.put('/:rid', function(req, res, next) {
-    const record = validateRecord(req.body);
-    const oldRecord = req.record;
-    const oldAccountFrom = oldRecord.accountFrom; // avoid sync
-    const oldAccountTo = oldRecord.accountTo;
-    const oldAmount = oldRecord.amount;
+    const newRecord = validateRecord(req.body);
+    const oldRecord = _.cloneDeep(req.record.toObject()); // copy to avoid sync
 
-    oldRecord.update(record, function(err, result) {
+    req.record.update(newRecord, function(err, result) {
         if (err) return next(err);
-        updateAccountByRecord(res, next, result, record, oldAccountFrom, oldAccountTo, oldAmount);
+        res.json(result);
+        updateRelatedInfoByRecord(newRecord, oldRecord);
     })
 });
 
@@ -162,7 +120,8 @@ route.delete('/:rid', function(req, res, next) {
     req.record.remove(function(err, result) {
         if (err) return next(err);
         result.amount = -result.amount;
-        updateAccountByRecord(res, next, result, result);
+        res.json(result);
+        updateRelatedInfoByRecord(result);
     });
 });
 
