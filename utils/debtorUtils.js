@@ -19,7 +19,7 @@ function getBalanceUpdateCommand(record, oldRecord = {}) {
 
     // if account is updated
     if (oldDebtor) {
-        if (oldAccountFrom) {
+        if (oldAccountFrom) { // 相当于撤销转账到债务人
             commands.push(getSingleItemUpdateCommand(oldDebtor, { "$inc": { "balance": -oldAmount } }));
         }
         if (oldAccountTo) {
@@ -28,7 +28,7 @@ function getBalanceUpdateCommand(record, oldRecord = {}) {
     }
 
     if (debtor) {
-        if (accountFrom) {
+        if (accountFrom) { // 相当于转账到债务人
             commands.push(getSingleItemUpdateCommand(debtor, { "$inc": { "balance": amount } }));
         }
 

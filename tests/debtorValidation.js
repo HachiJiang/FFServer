@@ -28,12 +28,12 @@ const calculateBalance = records => {
             return;
         }
 
-        if (accountFrom) {
-            addCalculatedItem(calculated, debtor, -amount);
+        if (accountFrom) { // 相当于转账到债务人
+            addCalculatedItem(calculated, debtor, amount);
         }
 
         if (accountTo) {
-            addCalculatedItem(calculated, debtor, amount);
+            addCalculatedItem(calculated, debtor, -amount);
         }
     });
 
