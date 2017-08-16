@@ -10,6 +10,7 @@ const accountRoutes = require('./accounts');
 const projectRoutes = require('./projects');
 const memberRoutes = require('./members');
 const debtorRoutes = require('./debtors');
+const amountRoutes = require('./amount');
 
 const VERSION = '/api/v1';
 
@@ -21,6 +22,7 @@ const loadRoutes = function(app) {
     app.use(`${VERSION}/projects`, projectRoutes);
     app.use(`${VERSION}/members`, memberRoutes);
     app.use(`${VERSION}/debtors`, debtorRoutes);
+    app.use(`${VERSION}/amount`, amountRoutes);
 };
 
 module.exports = loadRoutes;
