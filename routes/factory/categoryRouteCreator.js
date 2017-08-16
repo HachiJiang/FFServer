@@ -31,7 +31,7 @@ const category = function(Model) {
      * GET /
      * Route for getting all categories
      */
-    route.get('/', function(req, res) {
+    route.get('/', function(req, res, next) {
         Model.find({}).exec(function(err, cats) {
             if (err) return next(err);
             res.json(cats);

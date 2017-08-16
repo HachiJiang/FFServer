@@ -40,12 +40,12 @@ route.get('/', function(req, res) {
 });
 
 /**
- * GET /from/:fDate/to/:tDate
+ * GET /:fDate/:tDate
  * Route for getting records of specific date range
  */
-route.get('/from/:fDate/to/:tDate', function(req, res, next) {
-    const fDate = moment(req.params.fDate, 'YYYY-MM-DD', true);
-    const tDate = moment(req.params.tDate, 'YYYY-MM-DD', true);
+route.get('/:fDate/:tDate', function(req, res, next) {
+    const fDate = moment(req.params.fDate);
+    const tDate = moment(req.params.tDate);
 
     if (!fDate.isValid() || !tDate.isValid() || tDate.isBefore(fDate)) {
         return next(invalidParamsError());
