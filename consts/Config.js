@@ -9,7 +9,9 @@
  */
 
 const ID_SEPARATOR = ',';
+const DATABASE = 'finance_swordarchor';
 
 module.exports = {
-    ID_SEPARATOR
+    ID_SEPARATOR,
+    DATABASE
 };

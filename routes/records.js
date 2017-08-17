@@ -51,7 +51,7 @@ route.get('/:fDate/:tDate', function(req, res, next) {
         return next(invalidParamsError());
     }
 
-    Record.find({ consumeDate: { $gte: fDate, $lte: tDate } }, function(err, records) {
+    Record.find({ consumeDate: { $gte: fDate.toISOString(), $lte: tDate.toISOString() } }, function(err, records) {
         if (err) return next(err);
         res.json(records);
     });

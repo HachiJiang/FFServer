@@ -11,7 +11,8 @@ const debtorValidation = require('./tests/debtorValidation');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/finance');
+const { DATABASE } = require('./consts/Config');
+mongoose.connect(`mongodb://localhost:27017/${DATABASE}`);
 
 const VALIDATION_ENABLED = true;
 

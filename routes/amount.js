@@ -34,7 +34,8 @@ route.get('/aggregate_by_day/:type/:fDate/:tDate', function(req, res, next) {
 
     Record.aggregate([
         { $match: filter },
-        { $group: { _id: '$consumeDate', amount: { $sum: '$amount' } } }
+        { $group: { _id: '$consumeDate', amount: { $sum: '$amount' } } },
+        { $sort: { _id: 1 } }
     ], function(err, results) {
         if (err) return next(err);
         res.json(results);
