@@ -31,30 +31,21 @@ function getFilter({ recordType, fDate, tDate }) {
 /**
  * Get pipeline of group
  * @param {String} groupId
- * @param {String} groupField
- * @returns {{_id: string, sum: {$sum: string}}} @TODO: add operator as variables
+ * @returns {{_id: string, sum: {$sum: string}}} @TODO: add operator or field as variables
  */
 function getGroup({ groupId }) {
     if (groupId) {
-        return { _id: '$' + groupId, sum: { $sum: '$amount' } };
+        return {
+            _id: '$' + groupId, amount: { $sum: '$amount' }
+        };
     }
 }
 
 /**
- * GET /
+ * GET /:recordType/:groupId/:fDate/:tDate
  * Route for getting aggregated amount of specific date range and groupId
  */
-route.get('/', function(req, res, next) {
-    res.json({
-        message: 'ok!'
-    });
-});
-
-/**
- * GET /:recordType/:fDate/:tDate/:groupId
- * Route for getting aggregated amount of specific date range and groupId
- */
-route.get('/:recordType/:fDate/:tDate/:groupId', function(req, res, next) {
+route.get('/:recordType/:groupId/:fDate/:tDate', function(req, res, next) {
     const filter = getFilter(req.params);
     const group = getGroup(req.params);
 
