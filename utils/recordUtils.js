@@ -15,7 +15,7 @@ const getPropKeysByType = type => {
         default:
             return keys.concat(['category', 'accountFrom']);
         case EnumRecordType.INCOME:
-            return keys.concat(['category', 'accountTo']);
+            return keys.concat(['category', 'accountTo', 'amountPreTax', 'bonusPreTax']);
         case EnumRecordType.TRANSFER:
             return keys.concat(['accountFrom', 'accountTo']);
         case EnumRecordType.BORROW:

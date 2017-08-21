@@ -5,12 +5,15 @@
  * Routes for aggregation data
  *
  */
+const _ = require('lodash');
 const moment = require('moment');
 const express = require('express');
 const route = express.Router();
 
 const Record = require('../models/record');
 const EnumRecordTypes = require('../consts/EnumRecordTypes');
+
+const GROUP_SEPARATOR = '-';
 
 /**
  * Get pipeline of filter
@@ -20,6 +23,10 @@ const EnumRecordTypes = require('../consts/EnumRecordTypes');
  * @returns {{consumeDate: {$gte: Date, $lte: Date}, recordType: *}}
  */
 function getFilter({ recordType, fDate, tDate }) {
+    if (!fDate && !tDate) {
+        return { type: recordType };
+    }
+
     const fDateM = moment(fDate);
     const tDateM = moment(tDate);
 
@@ -30,22 +37,40 @@ function getFilter({ recordType, fDate, tDate }) {
 
 /**
  * Get pipeline of group
+ * @param {number} timeZoneOffset
+ * @param {String} sumBy
  * @param {String} groupId
  * @returns {{_id: string, sum: {$sum: string}}} @TODO: add operator or field as variables
  */
-function getGroup({ groupId }) {
-    if (groupId) {
-        return {
-            _id: '$' + groupId, amount: { $sum: '$amount' }
-        };
-    }
+function getGroup({ timeZoneOffset = 0, sumBy = '', groupId = '' }) {
+    const ids = groupId.split(GROUP_SEPARATOR);
+    const datePipeline = [{ $subtract: ['$consumeDate', timeZoneOffset * 60 * 1000] } ];
+    let groups = {};
+
+    _.forEach(ids, id => {
+        switch(id) {
+            case 'year':
+                groups[id] = { $year: datePipeline };  // date could only be consumeDate
+                break;
+            case 'month':
+                groups[id] = { $month: datePipeline };
+                break;
+            case 'day':
+                groups[id] = { $dayOfMonth: datePipeline };
+                break;
+            default:
+                groups[id] = '$' + id;
+                break;
+        }
+    });
+
+    return {
+        _id: groups,
+        value: { $sum: '$' + sumBy }  // use common prop name
+    };
 }
 
-/**
- * GET /:recordType/:groupId/:fDate/:tDate
- * Route for getting aggregated amount of specific date range and groupId
- */
-route.get('/:recordType/:groupId/:fDate/:tDate', function(req, res, next) {
+const routeHandler = (req, res, next) => {
     const filter = getFilter(req.params);
     const group = getGroup(req.params);
 
@@ -61,6 +86,18 @@ route.get('/:recordType/:groupId/:fDate/:tDate', function(req, res, next) {
         if (err) return next(err);
         res.json(results);
     });
-});
+};
+
+/**
+ * GET /:recordType/:groupId/:fDate/:tDate
+ * Route for getting aggregated amount of specific date range and groupId
+ */
+route.get('/:timeZoneOffset/:sumBy/:recordType/:groupId', routeHandler);
+
+/**
+ * GET /:recordType/:groupId/:fDate/:tDate
+ * Route for getting aggregated amount of specific date range and groupId
+ */
+route.get('/:timeZoneOffset/:sumBy/:recordType/:groupId/:fDate/:tDate', routeHandler);
 
 module.exports = route;

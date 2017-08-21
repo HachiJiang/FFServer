@@ -16,11 +16,29 @@ const RecordSchema = new Schema({
         required: true,
         trim: true
     },
-    amount: {
+    amount: {                   // 税后实际金额
         type: Number,
         required: true,
         validate: {
             validator: v => v > 0
+        }
+    },
+    amountPreTax: {             // 税前工资
+        type: Number,
+        required: function() {
+            return this.type === EnumRecordTypes.INCOME;
+        },
+        validate: {
+            validator: v => v >= 0
+        }
+    },
+    bonusPreTax: {              // 税前奖金
+        type: Number,
+        required: function() {
+            return this.type === EnumRecordTypes.INCOME;
+        },
+        validate: {
+            validator: v => v >= 0
         }
     },
     category: {
