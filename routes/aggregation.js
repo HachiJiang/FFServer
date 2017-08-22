@@ -43,26 +43,30 @@ function getFilter({ recordType, fDate, tDate }) {
  * @returns {{_id: string, sum: {$sum: string}}} @TODO: add operator or field as variables
  */
 function getGroup({ timeZoneOffset = 0, sumBy = '', groupId = '' }) {
-    const ids = groupId.split(GROUP_SEPARATOR);
-    const datePipeline = [{ $subtract: ['$consumeDate', timeZoneOffset * 60 * 1000] } ];
     let groups = {};
+    if (groupId) {
+        const ids = groupId.split(GROUP_SEPARATOR);
+        const datePipeline = [{ $subtract: ['$consumeDate', timeZoneOffset * 60 * 1000] } ];
 
-    _.forEach(ids, id => {
-        switch(id) {
-            case 'year':
-                groups[id] = { $year: datePipeline };  // date could only be consumeDate
-                break;
-            case 'month':
-                groups[id] = { $month: datePipeline };
-                break;
-            case 'day':
-                groups[id] = { $dayOfMonth: datePipeline };
-                break;
-            default:
-                groups[id] = '$' + id;
-                break;
-        }
-    });
+        _.forEach(ids, id => {
+            switch(id) {
+                case 'year':
+                    groups[id] = { $year: datePipeline };  // date could only be consumeDate
+                    break;
+                case 'month':
+                    groups[id] = { $month: datePipeline };
+                    break;
+                case 'day':
+                    groups[id] = { $dayOfMonth: datePipeline };
+                    break;
+                default:
+                    groups[id] = '$' + id;
+                    break;
+            }
+        });
+    } else {
+        groups = null;
+    }
 
     return {
         _id: groups,
@@ -89,13 +93,19 @@ const routeHandler = (req, res, next) => {
 };
 
 /**
- * GET /:recordType/:groupId/:fDate/:tDate
+ * GET /:timeZoneOffset/:sumBy/:recordType
+ * Route for getting aggregated amount of specific date range and groupId
+ */
+route.get('/:timeZoneOffset/:sumBy/:recordType', routeHandler);
+
+/**
+ * GET /:timeZoneOffset/:sumBy/:recordType/:groupId
  * Route for getting aggregated amount of specific date range and groupId
  */
 route.get('/:timeZoneOffset/:sumBy/:recordType/:groupId', routeHandler);
 
 /**
- * GET /:recordType/:groupId/:fDate/:tDate
+ * GET /:timeZoneOffset/:sumBy/:recordType/:groupId/:fDate/:tDate
  * Route for getting aggregated amount of specific date range and groupId
  */
 route.get('/:timeZoneOffset/:sumBy/:recordType/:groupId/:fDate/:tDate', routeHandler);
