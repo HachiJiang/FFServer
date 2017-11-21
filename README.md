@@ -158,7 +158,7 @@ API同FamilyMembers, 以/debtors开始
 
 ``` javascript
 {
-  	name: {
+    name: {
         type: String,
         required: true,
         trim: true/*,
@@ -178,7 +178,7 @@ API同FamilyMembers, 以/debtors开始
 
 ```javascript
 {
-  	name: {
+    name: {
         type: String,
         required: true,
         trim: true/*,
