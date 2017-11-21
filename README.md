@@ -3,7 +3,7 @@
 
 [TOC]
 
-### 思路
+## 思路
 使用框架：Express.js + MongoDB
 选型理由：快速搭建Server
 步骤：
@@ -14,8 +14,8 @@
 - [ ] 5.Security - 实现Signup/Login/Logout。
 - [ ] 6.使用HTTPs
 
-### API设计文档
-#### Users [多用户未完成]
+## API设计文档
+### Users [多用户未完成]
 用于管理注册用户。url均以/api/v1开始。
 
 | HTTP   | URL            | Request Body              | Description | Return |
@@ -26,7 +26,7 @@
 | PUT    | /users/:userId |                           | 更新用户信息      |        |
 | DELETE | /users/:userId | {}                        | 删除用户        |        |
 
-#### Records
+### Records
 用于操作日常流水记录，以下URL省略host前缀，http://localhost:8000/api/vi/...
 
 | HTTP   | URL                                | Request Body | Description         | Return |
@@ -37,7 +37,7 @@
 | PUT    | /records/:rid	{ record: { ... } }  |              | 更新某条流水记录            |        |
 | DELETE | /records/:rid                      | {}           | 删除某条流水记录            |        |
 
-#### Accounts
+### Accounts
 用于管理账户，两级类别，如：银行账户（招商银行，。），基金账户（余额宝，。），P2P，等等。
 
 | HTTP   | URL                            | Request Body                    | Description | Return |
@@ -50,22 +50,22 @@
 | DELETE | /accounts/:catId               | {}                              | 删除某个类别      |        |
 | DELETE | /accounts/:catId/items/:itemId | {}                              | 删除某个账户      |        |
 
-#### Projects
+### Projects
 用于管理项目，两级类别，如：日常，旅游度假（南京2016，台湾2017，。），等等。
 
 API同Accounts, 以/projects开始。
 
-#### Income
+### Income
 用于收入类别，两级类别，如：工资奖金（基本工资，奖金，etc），理财，等等。
 
 API同Accounts, 以/income开始。
 
-#### Outcome
+### Outcome
 用于支出类别，两级类别，如：工资奖金（基本工资，奖金，etc），理财，等等。
 
 API同Accounts, 以/outcome开始。
 
-#### FamilyMembers
+### FamilyMembers
 用于管理家庭成员。
 
 | HTTP   | URL                | Request Body     | Description | Return |
@@ -75,12 +75,12 @@ API同Accounts, 以/outcome开始。
 | PUT    | /members/:memberId | { name: String } | 更新某个成员名称    |        |
 | DELETE | /members/:memberId | {}               | 删除某个成员      |        |
 
-#### Debtors
+### Debtors
 用于管理债务债券关系人。
 
 API同FamilyMembers, 以/debtors开始
 
-#### Schema [未实现]
+### Schema [未实现]
 用于获取所有schema信息，包括 #3~8。
 
 用于管理家庭成员。
@@ -89,26 +89,26 @@ API同FamilyMembers, 以/debtors开始
 | ---- | ------- | ---------------------------------------- | ------------- | ------ |
 | GET  | /schema | { outcomeCategories, incomCategories, accountCategories, projectCategories, members, debtors } | 获取所有的schema信息 |        |
 
-#### Budgets
+### Budgets
 用于管理预算信息。
 
 | HTTP | URL  | Request Body | Description | Return |
 | ---- | ---- | ------------ | ----------- | ------ |
 |      |      |              |             |        |
 
-#### Dashboards
+### Dashboards
 
-### Security
+## Security
 
-### 数据库设计
+## 数据库设计
 技术选型：MongoDB
 选型理由：正在学习MongoDB
 
-#### 数据表
+### 数据表
 
-##### users --- 暂不支持多用户
+#### users --- 暂不支持多用户
 
-##### incomes/projects/outcomes
+#### incomes/projects/outcomes
 
 ``` javascript
 {
@@ -129,7 +129,7 @@ API同FamilyMembers, 以/debtors开始
 }
 ```
 
-##### accounts
+#### accounts
 
 ```javascript
 {
@@ -154,7 +154,7 @@ API同FamilyMembers, 以/debtors开始
 }
 ```
 
-##### members
+#### members
 
 ``` javascript
 {
@@ -174,7 +174,7 @@ API同FamilyMembers, 以/debtors开始
 }
 ```
 
-##### debtors
+#### debtors
 
 ```javascript
 {
@@ -198,7 +198,7 @@ API同FamilyMembers, 以/debtors开始
 }
 ```
 
-##### record
+#### record
 
 ``` javascript
 {
@@ -298,4 +298,4 @@ API同FamilyMembers, 以/debtors开始
 
 
 
-#### 数据库备份与恢复
+### 数据库备份与恢复
