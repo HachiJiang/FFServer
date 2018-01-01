@@ -1,8 +1,6 @@
 # FFServer
 目的：Training RESTful Server
 
-[TOC]
-
 ## 思路
 使用框架：Express.js + MongoDB
 选型理由：快速搭建Server
@@ -13,6 +11,7 @@
 - [x] 4.实现API业务逻辑，并联调；
 - [ ] 5.Security - 实现Signup/Login/Logout。
 - [ ] 6.使用HTTPs
+- [ ] 7.数据库的自动备份
 
 ## API设计文档
 ### Users [多用户未完成]
@@ -295,7 +294,3 @@ API同FamilyMembers, 以/debtors开始
     }
 }
 ```
-
-
-
-### 数据库备份与恢复
