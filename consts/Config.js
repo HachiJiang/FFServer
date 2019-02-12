@@ -9,7 +9,7 @@
  */
 
 const ID_SEPARATOR = ',';
-const DATABASE = 'mockdb';
+const DATABASE = 'finance_swordarchor';
 
 module.exports = {
     ID_SEPARATOR,
